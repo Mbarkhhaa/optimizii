@@ -121,7 +121,7 @@ export default function Orders() {
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-bold text-primary-500">
-                      €{order.total.toFixed(2)}
+                      {order.total.toFixed(2)} TND
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
                       {new Date(order.createdAt).toLocaleDateString('fr-FR', {

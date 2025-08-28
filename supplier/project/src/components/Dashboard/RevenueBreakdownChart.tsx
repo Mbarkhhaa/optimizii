@@ -42,7 +42,7 @@ const RevenueBreakdownChart: React.FC<RevenueBreakdownChartProps> = ({ data, loa
       return (
         <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-100">
           <p className="font-semibold text-gray-900">{data.category}</p>
-          <p className="text-green-600">${data.amount.toFixed(2)}</p>
+          <p className="text-green-600">{data.amount.toFixed(2)} TND</p>
           <p className="text-gray-600">{data.percentage.toFixed(1)}%</p>
         </div>
       );
@@ -106,7 +106,7 @@ const RevenueBreakdownChart: React.FC<RevenueBreakdownChartProps> = ({ data, loa
               <span className="font-medium text-gray-900">{item.category}</span>
             </div>
             <div className="text-right">
-              <p className="font-semibold text-gray-900">${item.amount.toFixed(2)}</p>
+              <p className="font-semibold text-gray-900">{item.amount.toFixed(2)} TND</p>
               <p className="text-sm text-gray-600">{item.percentage.toFixed(1)}%</p>
             </div>
           </div>

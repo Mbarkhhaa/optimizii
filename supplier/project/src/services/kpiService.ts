@@ -323,6 +323,12 @@ export class KPIService {
       const orders = await this.getOrders(fournisseurId);
       const paidOrders = orders.filter(order => order.paymentStatus === 'paid');
       
+      console.log('Customer segments calculation:', {
+        totalOrders: orders.length,
+        paidOrders: paidOrders.length,
+        fournisseurId
+      });
+      
       const customerData = new Map();
       
       paidOrders.forEach(order => {
@@ -335,20 +341,25 @@ export class KPIService {
         data.revenue += order.total || 0;
       });
 
+      console.log('Customer data map:', Array.from(customerData.entries()));
       const segments = {
-        'High Value': { count: 0, revenue: 0 },
-        'Medium Value': { count: 0, revenue: 0 },
-        'Low Value': { count: 0, revenue: 0 },
-        'New Customers': { count: 0, revenue: 0 }
+        'High Value': { count: 0, revenue: 0, color: '#F59E0B' },
+        'Medium Value': { count: 0, revenue: 0, color: '#8B5CF6' },
+        'Low Value': { count: 0, revenue: 0, color: '#3B82F6' },
+        'New Customers': { count: 0, revenue: 0, color: '#10B981' }
       };
 
       const totalRevenue = Array.from(customerData.values()).reduce((sum, data) => sum + data.revenue, 0);
 
+      // Adjust thresholds for better segmentation
+      const HIGH_VALUE_THRESHOLD = 200;
+      const MEDIUM_VALUE_THRESHOLD = 75;
+
       customerData.forEach(data => {
-        if (data.revenue > 1000) {
+        if (data.revenue >= HIGH_VALUE_THRESHOLD) {
           segments['High Value'].count += 1;
           segments['High Value'].revenue += data.revenue;
-        } else if (data.revenue > 500) {
+        } else if (data.revenue >= MEDIUM_VALUE_THRESHOLD) {
           segments['Medium Value'].count += 1;
           segments['Medium Value'].revenue += data.revenue;
         } else if (data.orders > 1) {
@@ -360,11 +371,13 @@ export class KPIService {
         }
       });
 
+      console.log('Final segments:', segments);
       return Object.entries(segments).map(([segment, data]) => ({
         segment,
         count: data.count,
         revenue: data.revenue,
-        percentage: totalRevenue > 0 ? (data.revenue / totalRevenue) * 100 : 0
+        percentage: totalRevenue > 0 ? (data.revenue / totalRevenue) * 100 : 0,
+        color: data.color
       }));
     } catch (error) {
       console.error('Error calculating customer segments:', error);

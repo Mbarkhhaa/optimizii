@@ -78,7 +78,7 @@ const KPIInsightsPanel: React.FC<KPIInsightsPanelProps> = ({ metrics }) => {
         type: 'success',
         icon: <ArrowTrendingUpIcon className="h-5 w-5" />,
         title: 'High Order Values',
-        message: `Average order value of $${metrics.averageOrderValue.toFixed(2)} indicates strong customer engagement.`,
+        message: `Valeur moyenne des commandes de ${metrics.averageOrderValue.toFixed(2)} TND indique un fort engagement client.`,
         action: 'Continue promoting premium products and bundles.'
       });
     }

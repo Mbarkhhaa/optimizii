@@ -38,15 +38,36 @@ export default function OrderConfirmation() {
 
   const handleReorder = async () => {
     if (!order) return;
-    // Load products to ensure valid references
+    
+    let addedItems = 0;
+    let unavailableItems = 0;
+    
     for (const item of order.items) {
-      const product = await productService.getProductById(item.productId);
-      if (product && product.stockQuantity > 0) {
-        // Add to cart with the same quantity
-        for (let i = 0; i < item.quantity; i++) {
-          dispatch({ type: 'ADD_TO_CART', payload: product });
+      try {
+        const product = await productService.getProductById(item.productId);
+        if (product && product.stockQuantity >= item.quantity) {
+          // Add to cart with the same quantity
+          for (let i = 0; i < item.quantity; i++) {
+            dispatch({ type: 'ADD_TO_CART', payload: product });
+          }
+          addedItems++;
+        } else {
+          unavailableItems++;
         }
+      } catch (error) {
+        console.error('Error loading product for reorder:', error);
+        unavailableItems++;
       }
+    }
+    
+    // Show feedback to user
+    if (addedItems > 0) {
+      // Navigate to cart to show added items
+      navigate('/cart');
+    }
+    
+    if (unavailableItems > 0) {
+      alert(`${unavailableItems} article(s) ne sont plus disponibles ou en stock insuffisant.`);
     }
   };
 
@@ -72,20 +93,6 @@ export default function OrderConfirmation() {
       </div>
     );
   }
-
-  const handleReorder = async () => {
-    if (!order) return;
-    // Load products to ensure valid references
-    for (const item of order.items) {
-      const product = await productService.getProductById(item.productId);
-      if (product && product.stockQuantity > 0) {
-        // Add to cart with the same quantity
-        for (let i = 0; i < item.quantity; i++) {
-          dispatch({ type: 'ADD_TO_CART', payload: product });
-        }
-      }
-    }
-  };
 
   if (error || !order) {
     return (

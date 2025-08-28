@@ -43,15 +43,12 @@ export const productService = {
       const products: Product[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        console.log('Document data:', doc.id, data);
         
         // More flexible data mapping
         const stockQuantity = Number(data.stockQuantity || data.stock || 0);
         const name = data.name || data.title || data.productName || '';
         const imageURL = data.imageURL || data.image || data.img || '';
         const prixTTC = Number(data.prixTTC || data.price || data.prixTtc || 0);
-        
-        console.log('Parsed values:', { stockQuantity, name, imageURL, prixTTC });
         
         // Include all products for now to debug
         products.push({
@@ -77,11 +74,9 @@ export const productService = {
         });
       });
 
-      console.log('Processed products:', products);
 
       // Filter products with stock > 0 after processing
       const inStockProducts = products.filter(product => product.stockQuantity > 0);
-      console.log('In stock products:', inStockProducts);
 
       // Sort on client side: by stock quantity (ascending), then by creation date (descending)
       inStockProducts.sort((a, b) => {

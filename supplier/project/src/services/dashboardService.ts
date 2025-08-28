@@ -29,6 +29,13 @@ export class DashboardService {
     // Get unique customers who have placed orders
     const uniqueCustomers = new Set(orders.map(order => order.userId));
 
+    console.log('Dashboard stats calculation:', {
+      totalProducts: productsSnapshot.size,
+      totalOrders: ordersSnapshot.size,
+      paidOrders: paidOrders.length,
+      totalRevenue,
+      uniqueCustomers: uniqueCustomers.size
+    });
     return {
       totalProducts: productsSnapshot.size,
       totalOrders: ordersSnapshot.size,

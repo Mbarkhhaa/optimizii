@@ -348,7 +348,7 @@ export default function Cart() {
                           onClick={() => moveToCart(product.id)}
                           className="flex-1 px-3 py-2 bg-primary-500 text-white text-sm rounded-lg hover:bg-primary-600 transition-colors"
                         >
-                          Déplacer dans le panier
+                          Ajouter au panier
                         </button>
                         <button
                           onClick={() => setSavedForLater(savedForLater.filter(id => id !== product.id))}

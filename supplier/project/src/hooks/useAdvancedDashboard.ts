@@ -78,6 +78,7 @@ export const useAdvancedDashboard = (fournisseurId: string | null) => {
       setLoading(true);
       setError(null);
 
+      console.log('Fetching dashboard data for fournisseur:', fournisseurId);
       const [metricsData, revenueData, segmentsData] = await Promise.all([
         KPIService.calculateAdvancedMetrics(fournisseurId),
         KPIService.getRevenueBreakdown(fournisseurId),
@@ -85,6 +86,11 @@ export const useAdvancedDashboard = (fournisseurId: string | null) => {
         fetchRecentOrders(fournisseurId)
       ]);
 
+      console.log('Dashboard data fetched:', {
+        metrics: metricsData,
+        revenue: revenueData,
+        segments: segmentsData
+      });
       setMetrics(metricsData);
       setRevenueBreakdown(revenueData);
       setCustomerSegments(segmentsData);

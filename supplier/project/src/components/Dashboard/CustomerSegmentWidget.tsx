@@ -25,6 +25,7 @@ const CustomerSegmentWidget: React.FC<CustomerSegmentWidgetProps> = ({
   if (loading) {
     return (
       <div className="bg-white rounded-3xl p-6 shadow-lg">
+      console.log('Customer analytics result:', analytics);
         <div className="flex items-center justify-between mb-6">
           <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
           <div className="h-6 w-6 bg-gray-200 rounded animate-pulse"></div>
