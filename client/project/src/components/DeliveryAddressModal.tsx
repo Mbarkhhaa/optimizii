@@ -9,6 +9,33 @@ interface DeliveryAddressModalProps {
   onSave: () => void;
 }
 
+const TUNISIAN_GOVERNORATES = [
+  'Ariana',
+  'Béja',
+  'Ben Arous',
+  'Bizerte',
+  'Gabès',
+  'Gafsa',
+  'Jendouba',
+  'Kairouan',
+  'Kasserine',
+  'Kébili',
+  'Kef',
+  'Mahdia',
+  'Manouba',
+  'Médenine',
+  'Monastir',
+  'Nabeul',
+  'Sfax',
+  'Sidi Bouzid',
+  'Siliana',
+  'Sousse',
+  'Tataouine',
+  'Tozeur',
+  'Tunis',
+  'Zaghouan'
+];
+
 export default function DeliveryAddressModal({ isOpen, onClose, onSave }: DeliveryAddressModalProps) {
   const { state, dispatch } = useApp();
   const [formData, setFormData] = useState({
@@ -22,6 +49,7 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (state.deliveryAddress) {
@@ -29,8 +57,41 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
     }
   }, [state.deliveryAddress]);
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.street.trim()) {
+      newErrors.street = 'L\'adresse principale est requise';
+    }
+
+    if (!formData.address2.trim()) {
+      newErrors.address2 = 'Les détails de l\'adresse sont requis';
+    }
+
+    if (!formData.city.trim()) {
+      newErrors.city = 'La ville est requise';
+    }
+
+    if (!formData.state) {
+      newErrors.state = 'Le gouvernorat est requis';
+    }
+
+    if (!formData.postalCode.trim()) {
+      newErrors.postalCode = 'Le code postal est requis';
+    } else if (!/^\d{4}$/.test(formData.postalCode)) {
+      newErrors.postalCode = 'Le code postal doit contenir 4 chiffres';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     if (!state.user) {
       setError('Vous devez être connecté pour enregistrer une adresse.');
@@ -62,6 +123,7 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
       country: 'Tunisie',
       instructions: '',
     });
+    setErrors({});
     setError(null);
   };
 
@@ -72,7 +134,7 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
       <div className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm" onClick={onClose} />
 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           <div className="flex items-center justify-between p-6 border-b">
             <h2 className="text-xl font-bold text-gray-800 flex items-center">
               <MapPin className="w-5 h-5 mr-2 text-orange-500" />
@@ -86,41 +148,54 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                 {error}
               </div>
             )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Adresse *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.street}
-                onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
-                placeholder="123 Rue Principale"
-              />
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Adresse principale *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.street}
+                  onChange={(e) => {
+                    setFormData({ ...formData, street: e.target.value });
+                    if (errors.street) setErrors({ ...errors, street: '' });
+                  }}
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
+                    errors.street ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="123 Rue Principale"
+                />
+                {errors.street && <p className="mt-1 text-sm text-red-600">{errors.street}</p>}
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Complément d'adresse
-              </label>
-              <input
-                type="text"
-                value={formData.address2}
-                onChange={(e) => setFormData({ ...formData, address2: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
-                placeholder="Appartement, étage, etc."
-              />
-            </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Détails de l'adresse *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.address2}
+                  onChange={(e) => {
+                    setFormData({ ...formData, address2: e.target.value });
+                    if (errors.address2) setErrors({ ...errors, address2: '' });
+                  }}
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
+                    errors.address2 ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="Appartement, étage, numéro de bâtiment, etc."
+                />
+                {errors.address2 && <p className="mt-1 text-sm text-red-600">{errors.address2}</p>}
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Ville *
@@ -129,28 +204,39 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
                   type="text"
                   required
                   value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
+                  onChange={(e) => {
+                    setFormData({ ...formData, city: e.target.value });
+                    if (errors.city) setErrors({ ...errors, city: '' });
+                  }}
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
+                    errors.city ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                   placeholder="Tunis"
                 />
+                {errors.city && <p className="mt-1 text-sm text-red-600">{errors.city}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Gouvernorat
+                  Gouvernorat *
                 </label>
                 <select
+                  required
                   value={formData.state}
-                  onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
+                  onChange={(e) => {
+                    setFormData({ ...formData, state: e.target.value });
+                    if (errors.state) setErrors({ ...errors, state: '' });
+                  }}
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
+                    errors.state ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
                 >
                   <option value="">Sélectionnez un gouvernorat</option>
-                  {[
-                    'Ariana','Béja','Ben Arous','Bizerte','Gabès','Gafsa','Jendouba','Kairouan','Kasserine','Kébili','Kef','Mahdia','Manouba','Médenine','Monastir','Nabeul','Sfax','Sidi Bouzid','Siliana','Sousse','Tataouine','Tozeur','Tunis','Zaghouan','Bizerte Sud','Ben Arous Sud','Grand Tunis','Cap Bon'
-                  ].map((g) => (
-                    <option key={g} value={g}>{g}</option>
+                  {TUNISIAN_GOVERNORATES.map((governorate) => (
+                    <option key={governorate} value={governorate}>{governorate}</option>
                   ))}
                 </select>
+                {errors.state && <p className="mt-1 text-sm text-red-600">{errors.state}</p>}
               </div>
 
               <div>
@@ -161,38 +247,46 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
                   type="text"
                   required
                   value={formData.postalCode}
-                  onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    setFormData({ ...formData, postalCode: value });
+                    if (errors.postalCode) setErrors({ ...errors, postalCode: '' });
+                  }}
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
+                    errors.postalCode ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="1000"
+                  maxLength={4}
+                />
+                {errors.postalCode && <p className="mt-1 text-sm text-red-600">{errors.postalCode}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Pays *
+                </label>
+                <select
+                  required
+                  value={formData.country}
+                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
-                  placeholder="75001"
+                >
+                  <option value="Tunisie">Tunisie</option>
+                </select>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Instructions de livraison (optionnel)
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.instructions}
+                  onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all resize-none"
+                  placeholder="Sonnez à la porte, laissez devant, étage, etc."
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pays *
-              </label>
-              <select
-                required
-                value={formData.country}
-                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
-              >
-                <option value="Tunisie">Tunisie</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Instructions de livraison (optionnel)
-              </label>
-              <textarea
-                rows={3}
-                value={formData.instructions}
-                onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all resize-none"
-                placeholder="Sonnez à la porte, laissez devant, etc."
-              />
             </div>
 
             <div className="flex space-x-3 pt-4">

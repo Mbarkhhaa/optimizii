@@ -111,11 +111,11 @@ export default function ProductCard({ product, showCategory = false, variant = '
               <div className="flex flex-col">
                 {product.discount > 0 && (
                   <span className="text-xs text-neutral-500 dark:text-neutral-400 line-through">
-                    €{product.prixTTC.toFixed(2)}
+                    {discountedPrice.toFixed(2)} TND
                   </span>
                 )}
                 <span className="font-bold text-primary-600 dark:text-primary-400 text-sm">
-                  €{discountedPrice.toFixed(2)}
+                  {discountedPrice.toFixed(2)} TND
                 </span>
               </div>
               
@@ -205,22 +205,22 @@ export default function ProductCard({ product, showCategory = false, variant = '
         
         <div className="p-6 flex flex-col flex-1">
           <div className="flex items-start justify-between mb-3">
-            <h3 className="text-xl font-bold text-neutral-800 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 flex-1 mr-3">
+            <h3 className="text-xl font-bold text-neutral-800 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 flex-1 mr-3 leading-tight">
               {product.name}
             </h3>
-            <div className="text-right flex-shrink-0">
+            <div className="text-right flex-shrink-0 min-w-0">
               {product.discount > 0 && (
                 <span className="text-sm text-neutral-500 dark:text-neutral-400 line-through block">
-                  €{product.prixTTC.toFixed(2)}
+                  {product.prixTTC.toFixed(2)} TND
                 </span>
               )}
               <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-                €{discountedPrice.toFixed(2)}
+                {discountedPrice.toFixed(2)} TND
               </span>
             </div>
           </div>
           
-          <p className="text-neutral-600 dark:text-neutral-300 mb-4 line-clamp-2 text-sm leading-relaxed">{product.description}</p>
+          <p className="text-neutral-600 dark:text-neutral-300 mb-4 line-clamp-2 text-sm leading-relaxed flex-grow">{product.description}</p>
           
           {/* Fournisseur info */}
           {product.fournisseurName && (
@@ -268,7 +268,7 @@ export default function ProductCard({ product, showCategory = false, variant = '
               <button
                 onClick={handleAddToCart}
                 disabled={product.stockQuantity === 0}
-                className="px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-soft shadow-soft hover:shadow-glow transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-soft shadow-soft hover:shadow-glow transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none whitespace-nowrap"
               >
                 <ShoppingCart className="w-4 h-4" />
                 <span className="hidden sm:inline">{product.stockQuantity === 0 ? 'Rupture de stock' : isInCart ? 'Ajouter plus' : 'Ajouter'}</span>
