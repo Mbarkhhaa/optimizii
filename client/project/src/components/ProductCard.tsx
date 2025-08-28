@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, ShoppingCart, Tag, Clock, Truck, Plus, Award, Store } from 'lucide-react';
+import { Star, ShoppingCart, Tag, Clock, Truck, Plus, Award, Store, Heart } from 'lucide-react';
 import { Product } from '../types';
 import { useApp } from '../context/AppContext';
 import ProductRating from './ProductRating';
@@ -111,7 +111,7 @@ export default function ProductCard({ product, showCategory = false, variant = '
               <div className="flex flex-col">
                 {product.discount > 0 && (
                   <span className="text-xs text-neutral-500 dark:text-neutral-400 line-through">
-                    {discountedPrice.toFixed(2)} TND
+                    {product.prixTTC.toFixed(2)} TND
                   </span>
                 )}
                 <span className="font-bold text-primary-600 dark:text-primary-400 text-sm">
@@ -138,7 +138,7 @@ export default function ProductCard({ product, showCategory = false, variant = '
       className="group cursor-pointer block h-full"
       onClick={handleProductView}
     >
-      <div className="bg-white/80 dark:bg-neutral-800/80 backdrop-blur-soft rounded-soft-xl shadow-soft hover:shadow-soft-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-white/30 dark:border-neutral-700/30 hover:border-primary-200 dark:hover:border-primary-800 h-full flex flex-col">
+      <div className="bg-white/90 dark:bg-neutral-800/90 backdrop-blur-soft rounded-soft-xl shadow-soft hover:shadow-soft-xl transform hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-white/40 dark:border-neutral-700/40 hover:border-primary-200 dark:hover:border-primary-800 h-full flex flex-col">
         <div className="relative overflow-hidden">
           <div className="aspect-[4/3] overflow-hidden">
             <img
@@ -149,7 +149,7 @@ export default function ProductCard({ product, showCategory = false, variant = '
           </div>
           
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
           {/* Badges */}
           <div className="absolute top-4 left-4 flex flex-col gap-2">
@@ -204,75 +204,94 @@ export default function ProductCard({ product, showCategory = false, variant = '
         </div>
         
         <div className="p-6 flex flex-col flex-1">
-          <div className="flex items-start justify-between mb-3">
-            <h3 className="text-xl font-bold text-neutral-800 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 flex-1 mr-3 leading-tight">
-              {product.name}
-            </h3>
-            <div className="text-right flex-shrink-0 min-w-0">
-              {product.discount > 0 && (
-                <span className="text-sm text-neutral-500 dark:text-neutral-400 line-through block">
-                  {product.prixTTC.toFixed(2)} TND
-                </span>
-              )}
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-                {discountedPrice.toFixed(2)} TND
-              </span>
-            </div>
-          </div>
-          
-          <p className="text-neutral-600 dark:text-neutral-300 mb-4 line-clamp-2 text-sm leading-relaxed flex-grow">{product.description}</p>
-          
-          {/* Fournisseur info */}
-          {product.fournisseurName && (
-            <div className="flex items-center gap-2 mb-3">
-              <Store className="w-4 h-4 text-primary-600 dark:text-primary-400" />
-              <span className="text-sm text-neutral-700 dark:text-neutral-300 font-medium">
-                {product.fournisseurName}
-              </span>
-            </div>
-          )}
-          
-          {/* Tags */}
-          {product.Tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {product.Tags.slice(0, 3).map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gradient-to-r from-primary-50 to-soft-50 dark:from-primary-900/30 dark:to-soft-900/30 text-primary-700 dark:text-primary-300 text-xs rounded-full font-medium border border-primary-100 dark:border-primary-800"
-                >
-                  {tag}
-                </span>
-              ))}
-              {product.Tags.length > 3 && (
-                <span className="px-3 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 text-xs rounded-full border border-neutral-200 dark:border-neutral-600">
-                  +{product.Tags.length - 3} de plus
-                </span>
-              )}
-            </div>
-          )}
-          
-          <div className="flex items-center justify-between mt-auto pt-2">
-            <div className="flex items-center gap-4">
-              <ProductRating product={product} compact={true} showReviews={false} />
-              <span className="text-sm text-neutral-600 dark:text-neutral-400">par {product.unit}</span>
+          {/* Fixed height container for consistent alignment */}
+          <div className="flex flex-col h-full">
+            {/* Title section - fixed height */}
+            <div className="h-14 mb-3">
+              <h3 className="text-lg font-bold text-neutral-800 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2 leading-tight">
+                {product.name}
+              </h3>
             </div>
             
-            <div className="flex items-center gap-3">
-              {isInCart && (
-                <div className="flex items-center gap-1.5 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-700 dark:text-green-300 px-3 py-1.5 rounded-full text-sm font-medium border border-green-200 dark:border-green-800">
-                  <ShoppingCart className="w-3.5 h-3.5" />
-                  <span>{cartQuantity}</span>
+            {/* Description section - fixed height */}
+            <div className="h-12 mb-4">
+              <p className="text-neutral-600 dark:text-neutral-300 text-sm line-clamp-2 leading-relaxed">
+                {product.description}
+              </p>
+            </div>
+            
+            {/* Fournisseur info - fixed height */}
+            <div className="h-6 mb-3">
+              {product.fournisseurName && (
+                <div className="flex items-center gap-2">
+                  <Store className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                  <span className="text-sm text-neutral-700 dark:text-neutral-300 font-medium truncate">
+                    {product.fournisseurName}
+                  </span>
                 </div>
               )}
+            </div>
+            
+            {/* Tags section - fixed height */}
+            <div className="h-8 mb-4">
+              {product.Tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {product.Tags.slice(0, 2).map((tag, index) => (
+                    <span
+                      key={index}
+                      className="px-2 py-1 bg-gradient-to-r from-primary-50 to-soft-50 dark:from-primary-900/30 dark:to-soft-900/30 text-primary-700 dark:text-primary-300 text-xs rounded-full font-medium border border-primary-100 dark:border-primary-800 truncate"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                  {product.Tags.length > 2 && (
+                    <span className="px-2 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 text-xs rounded-full border border-neutral-200 dark:border-neutral-600">
+                      +{product.Tags.length - 2}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {/* Rating section - fixed height */}
+            <div className="h-6 mb-4">
+              <ProductRating product={product} compact={true} showReviews={false} />
+            </div>
+            
+            {/* Price and action section - fixed at bottom */}
+            <div className="mt-auto">
+              {/* Price section */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col">
+                  {product.discount > 0 && (
+                    <span className="text-sm text-neutral-500 dark:text-neutral-400 line-through">
+                      {product.prixTTC.toFixed(2)} TND
+                    </span>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+                      {discountedPrice.toFixed(2)} TND
+                    </span>
+                    <span className="text-sm text-neutral-600 dark:text-neutral-400">par {product.unit}</span>
+                  </div>
+                </div>
+                
+                {isInCart && (
+                  <div className="flex items-center gap-1.5 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-700 dark:text-green-300 px-3 py-1.5 rounded-full text-sm font-medium border border-green-200 dark:border-green-800">
+                    <ShoppingCart className="w-3.5 h-3.5" />
+                    <span>{cartQuantity}</span>
+                  </div>
+                )}
+              </div>
               
+              {/* Action button */}
               <button
                 onClick={handleAddToCart}
                 disabled={product.stockQuantity === 0}
-                className="px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-soft shadow-soft hover:shadow-glow transform hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none whitespace-nowrap"
+                className="w-full px-4 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-soft shadow-soft hover:shadow-glow transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 <ShoppingCart className="w-4 h-4" />
-                <span className="hidden sm:inline">{product.stockQuantity === 0 ? 'Rupture de stock' : isInCart ? 'Ajouter plus' : 'Ajouter'}</span>
-                <span className="sm:hidden">+</span>
+                <span>{product.stockQuantity === 0 ? 'Rupture de stock' : isInCart ? 'Ajouter plus' : 'Ajouter'}</span>
               </button>
             </div>
           </div>

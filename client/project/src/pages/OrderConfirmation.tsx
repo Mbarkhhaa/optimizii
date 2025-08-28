@@ -36,6 +36,20 @@ export default function OrderConfirmation() {
     }
   };
 
+  const handleReorder = async () => {
+    if (!order) return;
+    // Load products to ensure valid references
+    for (const item of order.items) {
+      const product = await productService.getProductById(item.productId);
+      if (product && product.stockQuantity > 0) {
+        // Add to cart with the same quantity
+        for (let i = 0; i < item.quantity; i++) {
+          dispatch({ type: 'ADD_TO_CART', payload: product });
+        }
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12">

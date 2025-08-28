@@ -62,31 +62,31 @@ export class KPIDetailService {
       },
 
       'total-revenue': {
-        explanation: "Total Revenue represents the sum of all successful transactions from paid orders. This is your primary income metric and directly reflects your business's financial performance. Revenue growth is essential for business sustainability and expansion.",
-        calculation: "SUM(orders.total WHERE payment_status = 'paid')",
-        benchmark: "Revenue growth of 15-25% annually is considered healthy for e-commerce businesses. Your current trajectory shows strong performance.",
+        explanation: "Le chiffre d'affaires total représente la somme de toutes les transactions réussies des commandes payées. Il s'agit de votre indicateur de revenus principal et reflète directement la performance financière de votre entreprise.",
+        calculation: "SOMME(commandes.total OÙ statut_paiement = 'payé')",
+        benchmark: "Une croissance du chiffre d'affaires de 15-25% par an est considérée comme saine pour les entreprises e-commerce. Votre trajectoire actuelle montre de bonnes performances.",
         insights: [
-          `Generated ${metrics.totalRevenue.toFixed(2)} TND in total revenue`,
-          `Average revenue per customer: ${(metrics.totalRevenue / metrics.totalCustomers).toFixed(2)} TND`,
-          `Revenue growth rate: ${metrics.revenueGrowth.toFixed(1)}% vs last month`,
-          `Gross margin: ${metrics.grossMargin.toFixed(1)}%`
+          `Chiffre d'affaires total généré : ${metrics.totalRevenue.toFixed(2)} TND`,
+          `Revenus moyens par client : ${(metrics.totalRevenue / metrics.totalCustomers).toFixed(2)} TND`,
+          `Taux de croissance : ${metrics.revenueGrowth.toFixed(1)}% vs mois dernier`,
+          `Marge brute : ${metrics.grossMargin.toFixed(1)}%`
         ],
         recommendations: [
-          "Focus on increasing average order value through upselling",
-          "Implement dynamic pricing strategies for high-demand products",
-          "Develop customer loyalty programs to increase repeat purchases",
-          "Analyze seasonal trends to optimize promotional campaigns"
+          "Concentrez-vous sur l'augmentation de la valeur moyenne des commandes par la vente incitative",
+          "Implémentez des stratégies de tarification dynamique pour les produits très demandés",
+          "Développez des programmes de fidélité client pour augmenter les achats répétés",
+          "Analysez les tendances saisonnières pour optimiser les campagnes promotionnelles"
         ],
         trendData: this.generateRevenueTrendData(metrics.totalRevenue, 12),
         breakdown: [
-          { label: 'Product Sales', value: metrics.totalRevenue * 0.85, percentage: 85 },
-          { label: 'Shipping Fees', value: metrics.totalRevenue * 0.10, percentage: 10 },
-          { label: 'Other Income', value: metrics.totalRevenue * 0.05, percentage: 5 }
+          { label: 'Ventes de produits', value: metrics.totalRevenue * 0.85, percentage: 85 },
+          { label: 'Frais de livraison', value: metrics.totalRevenue * 0.10, percentage: 10 },
+          { label: 'Autres revenus', value: metrics.totalRevenue * 0.05, percentage: 5 }
         ],
         relatedMetrics: [
-          { name: 'Net Profit', value: `${metrics.netProfit.toFixed(2)} TND`, impact: 'positive' as const },
-          { name: 'Operating Expenses', value: `${metrics.operatingExpenses.toFixed(2)} TND`, impact: 'negative' as const },
-          { name: 'Profit Margin', value: `${((metrics.netProfit / metrics.totalRevenue) * 100).toFixed(1)}%`, impact: 'positive' as const }
+          { name: 'Bénéfice net', value: `${metrics.netProfit.toFixed(2)} TND`, impact: 'positive' as const },
+          { name: 'Charges d\'exploitation', value: `${metrics.operatingExpenses.toFixed(2)} TND`, impact: 'negative' as const },
+          { name: 'Marge bénéficiaire', value: `${((metrics.netProfit / metrics.totalRevenue) * 100).toFixed(1)}%`, impact: 'positive' as const }
         ]
       },
 

@@ -26,6 +26,10 @@ export default function Checkout() {
   const [progress, setProgress] = useState(0);
   const cancelTimerRef = useRef<number | null>(null);
   const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const cancelTimerRef = useRef<number | null>(null);
+  const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
 
   // Redirection si non authentifié ou sans adresse de livraison
   React.useEffect(() => {
@@ -95,10 +99,48 @@ export default function Checkout() {
         }
       };
       tick();
+      setProgress(0);
+      const durationMs = 20000;
+      const startedAt = Date.now();
+      const tick = () => {
+        const elapsed = Date.now() - startedAt;
+        const pct = Math.min(100, (elapsed / durationMs) * 100);
+        setProgress(pct);
+        if (pct < 100) {
+          cancelTimerRef.current = window.setTimeout(tick, 100);
+        } else {
+          // Auto confirm after 20s
+          finalizeOrder();
+        }
+      };
+      tick();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Échec de la commande');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const cancelOrder = async () => {
+    try {
+      if (pendingOrderId) {
+        await masterOrderService.cancelMasterOrder(pendingOrderId);
+      }
+    } finally {
+      if (cancelTimerRef.current) window.clearTimeout(cancelTimerRef.current);
+      setShowCancelPopup(false);
+      setPendingOrderId(null);
+    }
+  };
+
+  const finalizeOrder = () => {
+    if (cancelTimerRef.current) window.clearTimeout(cancelTimerRef.current);
+    setShowCancelPopup(false);
+    // Vider le panier et naviguer
+    dispatch({ type: 'CLEAR_CART' });
+    if (pendingOrderId) {
+      navigate(`/order-confirmation/${pendingOrderId}`);
+      setPendingOrderId(null);
     }
   };
 
@@ -132,6 +174,22 @@ export default function Checkout() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12">
       <div className="max-w-4xl mx-auto px-6">
+        {showCancelPopup && (
+          <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md p-6">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Confirmation de commande</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Votre commande a été créée. Vous avez 20 secondes pour l'annuler.</p>
+              <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-4">
+                <div className="h-2 bg-primary-500 transition-all" style={{ width: `${progress}%` }} />
+              </div>
+              <div className="flex gap-3">
+                <button onClick={cancelOrder} className="flex-1 px-4 py-2 border border-red-300 text-red-600 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20">Annuler la commande</button>
+                <button onClick={finalizeOrder} className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700">Confirmer maintenant</button>
+              </div>
+            </div>
+          </div>
+        )}
         {showCancelPopup && (
           <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/40" />

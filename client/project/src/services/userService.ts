@@ -3,7 +3,7 @@ import { db } from '../config.js';
 
 export interface DeliveryAddress {
   street: string;
-  address2?: string;
+  address2: string;
   city: string;
   state?: string; // Tunisia governorate
   postalCode: string;

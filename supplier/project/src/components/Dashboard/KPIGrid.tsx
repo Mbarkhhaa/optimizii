@@ -86,13 +86,14 @@ const KPIGrid: React.FC<KPIGridProps> = ({ metrics, loading }) => {
     {
       id: 'total-revenue',
       title: 'Total Revenue',
-      value: `${metrics.totalRevenue.toFixed(2)} TND`,
+      value: metrics.totalRevenue,
       change: `${metrics.revenueGrowth.toFixed(1)}%`,
       changeType: metrics.revenueGrowth >= 0 ? 'increase' as const : 'decrease' as const,
       icon: <CurrencyDollarIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-purple-500 to-purple-600',
       description: 'Revenue from paid orders',
-      hasDetails: true
+      hasDetails: true,
+      format: 'currency' as const
     },
     {
       id: 'total-customers',
@@ -110,68 +111,76 @@ const KPIGrid: React.FC<KPIGridProps> = ({ metrics, loading }) => {
     {
       id: 'average-order-value',
       title: 'Avg Order Value',
-      value: `${metrics.averageOrderValue.toFixed(2)} TND`,
+      value: metrics.averageOrderValue,
       change: '5%',
       changeType: 'increase' as const,
       icon: <ChartBarIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-indigo-500 to-indigo-600',
       description: 'Average value per order',
-      hasDetails: true
+      hasDetails: true,
+      format: 'currency' as const
     },
     {
       id: 'conversion-rate',
       title: 'Conversion Rate',
-      value: `${metrics.conversionRate.toFixed(1)}%`,
+      value: metrics.conversionRate,
       change: '2%',
       changeType: 'increase' as const,
       icon: <ArrowTrendingUpIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-teal-500 to-teal-600',
       description: 'Visitors to customers',
-      hasDetails: true
+      hasDetails: true,
+      format: 'percentage' as const
     },
     {
       id: 'customer-retention',
       title: 'Customer Retention',
-      value: `${metrics.customerRetentionRate.toFixed(1)}%`,
+      value: metrics.customerRetentionRate,
       change: '3%',
       changeType: 'increase' as const,
       icon: <UsersIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-pink-500 to-pink-600',
       description: 'Repeat customers',
-      hasDetails: true
+      hasDetails: true,
+      format: 'percentage' as const
     },
     {
       id: 'fulfillment-rate',
       title: 'Fulfillment Rate',
-      value: `${metrics.fulfillmentRate.toFixed(1)}%`,
+      value: metrics.fulfillmentRate,
       change: '1%',
       changeType: 'increase' as const,
       icon: <ClockIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-cyan-500 to-cyan-600',
       description: 'Successfully delivered orders',
-      hasDetails: true
+      hasDetails: true,
+      format: 'percentage' as const
     },
 
     // Performance Metrics
     {
       id: 'avg-delivery-time',
       title: 'Avg Delivery Time',
-      value: `${metrics.averageDeliveryTime.toFixed(1)} days`,
+      value: metrics.averageDeliveryTime,
       change: '-0.5 days',
       changeType: 'increase' as const,
       icon: <ClockIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-amber-500 to-amber-600',
-      description: 'Average time to deliver'
+      description: 'Average time to deliver',
+      hasDetails: true,
+      format: 'duration' as const
     },
     {
       id: 'satisfaction-score',
       title: 'Satisfaction Score',
-      value: `${metrics.customerSatisfactionScore.toFixed(1)}%`,
+      value: metrics.customerSatisfactionScore,
       change: '2%',
       changeType: 'increase' as const,
       icon: <StarIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-yellow-500 to-yellow-600',
-      description: 'Customer satisfaction'
+      description: 'Customer satisfaction',
+      hasDetails: true,
+      format: 'percentage' as const
     },
     {
       id: 'low-stock-products',
@@ -181,17 +190,20 @@ const KPIGrid: React.FC<KPIGridProps> = ({ metrics, loading }) => {
       changeType: metrics.lowStockProducts > 0 ? 'decrease' as const : 'increase' as const,
       icon: <ExclamationTriangleIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-red-500 to-red-600',
-      description: 'Products running low'
+      description: 'Products running low',
+      hasDetails: true
     },
     {
       id: 'gross-margin',
       title: 'Gross Margin',
-      value: `${metrics.grossMargin.toFixed(1)}%`,
+      value: metrics.grossMargin,
       change: '1%',
       changeType: 'increase' as const,
       icon: <BanknotesIcon className="h-8 w-8 text-white" />,
       gradient: 'bg-gradient-to-br from-emerald-500 to-emerald-600',
-      description: 'Profit margin percentage'
+      description: 'Profit margin percentage',
+      hasDetails: true,
+      format: 'percentage' as const
     }
   ];
 
@@ -210,6 +222,7 @@ const KPIGrid: React.FC<KPIGridProps> = ({ metrics, loading }) => {
             description={kpi.description}
             hasDetails={kpi.hasDetails}
             onClick={kpi.hasDetails ? () => handleKPIClick(kpi.id, kpi) : undefined}
+            format={kpi.format}
           />
         ))}
       </div>

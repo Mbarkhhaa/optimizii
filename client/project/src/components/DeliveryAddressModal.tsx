@@ -134,15 +134,15 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
       <div className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm" onClick={onClose} />
 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between p-6 border-b">
-            <h2 className="text-xl font-bold text-gray-800 flex items-center">
-              <MapPin className="w-5 h-5 mr-2 text-orange-500" />
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+              <MapPin className="w-5 h-5 mr-2 text-primary-500" />
               Adresse de livraison
             </h2>
             <button
               onClick={onClose}
-              className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -150,14 +150,14 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
 
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-sm">
                 {error}
               </div>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Adresse principale *
                 </label>
                 <input
@@ -168,16 +168,16 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
                     setFormData({ ...formData, street: e.target.value });
                     if (errors.street) setErrors({ ...errors, street: '' });
                   }}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
-                    errors.street ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                    errors.street ? 'border-red-300 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
                   }`}
                   placeholder="123 Rue Principale"
                 />
-                {errors.street && <p className="mt-1 text-sm text-red-600">{errors.street}</p>}
+                {errors.street && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.street}</p>}
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Détails de l'adresse *
                 </label>
                 <input
@@ -188,16 +188,16 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
                     setFormData({ ...formData, address2: e.target.value });
                     if (errors.address2) setErrors({ ...errors, address2: '' });
                   }}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
-                    errors.address2 ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                    errors.address2 ? 'border-red-300 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
                   }`}
                   placeholder="Appartement, étage, numéro de bâtiment, etc."
                 />
-                {errors.address2 && <p className="mt-1 text-sm text-red-600">{errors.address2}</p>}
+                {errors.address2 && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.address2}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Ville *
                 </label>
                 <input
@@ -208,16 +208,16 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
                     setFormData({ ...formData, city: e.target.value });
                     if (errors.city) setErrors({ ...errors, city: '' });
                   }}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
-                    errors.city ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                    errors.city ? 'border-red-300 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
                   }`}
                   placeholder="Tunis"
                 />
-                {errors.city && <p className="mt-1 text-sm text-red-600">{errors.city}</p>}
+                {errors.city && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.city}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Gouvernorat *
                 </label>
                 <select
@@ -227,8 +227,8 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
                     setFormData({ ...formData, state: e.target.value });
                     if (errors.state) setErrors({ ...errors, state: '' });
                   }}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
-                    errors.state ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                    errors.state ? 'border-red-300 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
                   }`}
                 >
                   <option value="">Sélectionnez un gouvernorat</option>
@@ -236,11 +236,11 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
                     <option key={governorate} value={governorate}>{governorate}</option>
                   ))}
                 </select>
-                {errors.state && <p className="mt-1 text-sm text-red-600">{errors.state}</p>}
+                {errors.state && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.state}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Code postal *
                 </label>
                 <input
@@ -252,38 +252,38 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
                     setFormData({ ...formData, postalCode: value });
                     if (errors.postalCode) setErrors({ ...errors, postalCode: '' });
                   }}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all ${
-                    errors.postalCode ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                    errors.postalCode ? 'border-red-300 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600'
                   }`}
                   placeholder="1000"
                   maxLength={4}
                 />
-                {errors.postalCode && <p className="mt-1 text-sm text-red-600">{errors.postalCode}</p>}
+                {errors.postalCode && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.postalCode}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Pays *
                 </label>
                 <select
                   required
                   value={formData.country}
                   onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="Tunisie">Tunisie</option>
                 </select>
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Instructions de livraison (optionnel)
                 </label>
                 <textarea
                   rows={3}
                   value={formData.instructions}
                   onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="Sonnez à la porte, laissez devant, étage, etc."
                 />
               </div>
@@ -293,7 +293,7 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center"
+                className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
               >
                 <Edit3 className="w-4 h-4 mr-2" />
                 Effacer
@@ -301,7 +301,7 @@ export default function DeliveryAddressModal({ isOpen, onClose, onSave }: Delive
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {loading ? 'Enregistrement...' : 'Enregistrer'}

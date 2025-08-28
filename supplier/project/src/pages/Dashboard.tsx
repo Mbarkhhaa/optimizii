@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useFournisseur } from '../hooks/useFournisseur';
 import { useAdvancedDashboard } from '../hooks/useAdvancedDashboard';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../config/config';
 import KPIGrid from '../components/Dashboard/KPIGrid';
 import KPIInsightsPanel from '../components/Dashboard/KPIInsightsPanel';
 import TopProductsWidget from '../components/Dashboard/TopProductsWidget';
@@ -20,7 +22,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const Dashboard: React.FC = () => {
   const { userData } = useAuth();
   const { fournisseur, updateFournisseur } = useFournisseur();
-  const [deliveryMinutes, setDeliveryMinutes] = useState<number>(fournisseur?.estimatedDeliveryMinutes || 30);
+  const [deliveryMinutes, setDeliveryMinutes] = useState<number>(30);
+  const [savingDeliveryTime, setSavingDeliveryTime] = useState(false);
   const { 
     metrics, 
     revenueBreakdown, 
@@ -34,6 +37,50 @@ const Dashboard: React.FC = () => {
   
   const { stats: notificationStats } = useEnhancedNotifications(fournisseur?.id || null);
   
+  // Update delivery minutes when fournisseur data loads
+  useEffect(() => {
+    if (fournisseur?.estimatedDeliveryMinutes) {
+      setDeliveryMinutes(fournisseur.estimatedDeliveryMinutes);
+    }
+  }, [fournisseur]);
+
+  const handleSaveDeliveryTime = async () => {
+    if (!fournisseur) return;
+    
+    try {
+      setSavingDeliveryTime(true);
+      
+      // Update in Firestore
+      await updateDoc(doc(db, 'Fournisseurs', fournisseur.id), {
+        estimatedDeliveryMinutes: deliveryMinutes,
+        updatedAt: new Date().toISOString()
+      });
+      
+      // Update local state
+      await updateFournisseur({ estimatedDeliveryMinutes: deliveryMinutes });
+      
+      // Show success message
+      if ((window as any).showToast) {
+        (window as any).showToast({
+          type: 'success',
+          title: 'Delivery Time Updated',
+          message: `Delivery time set to ${deliveryMinutes} minutes`
+        });
+      }
+    } catch (error) {
+      console.error('Error updating delivery time:', error);
+      if ((window as any).showToast) {
+        (window as any).showToast({
+          type: 'error',
+          title: 'Update Failed',
+          message: 'Failed to update delivery time'
+        });
+      }
+    } finally {
+      setSavingDeliveryTime(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -90,14 +137,22 @@ const Dashboard: React.FC = () => {
               max={240}
               value={deliveryMinutes}
               onChange={(e) => setDeliveryMinutes(parseInt(e.target.value || '0', 10))}
-              className="w-24 px-3 py-2 border border-gray-300 rounded-xl"
+              className="w-24 px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <span className="text-gray-700">minutes</span>
             <button
-              onClick={() => updateFournisseur({ estimatedDeliveryMinutes: deliveryMinutes })}
-              className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+              onClick={handleSaveDeliveryTime}
+              disabled={savingDeliveryTime}
+              className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              Save
+              {savingDeliveryTime ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Saving...
+                </>
+              ) : (
+                'Save'
+              )}
             </button>
           </div>
         </div>

@@ -11,6 +11,7 @@ interface KPICardProps {
   description?: string;
   onClick?: () => void;
   hasDetails?: boolean;
+  format?: 'currency' | 'percentage' | 'number' | 'duration';
 }
 
 const KPICard: React.FC<KPICardProps> = ({
@@ -22,8 +23,25 @@ const KPICard: React.FC<KPICardProps> = ({
   gradient,
   description,
   onClick,
-  hasDetails = false
+  hasDetails = false,
+  format = 'number'
 }) => {
+  const formatValue = (value: string | number) => {
+    if (typeof value === 'string') return value;
+    
+    switch (format) {
+      case 'currency':
+        return `${value.toFixed(2)} TND`;
+      case 'percentage':
+        return `${value.toFixed(1)}%`;
+      case 'duration':
+        return `${value.toFixed(1)} jours`;
+      case 'number':
+      default:
+        return value > 999 ? value.toLocaleString() : value.toString();
+    }
+  };
+
   const getChangeColor = () => {
     switch (changeType) {
       case 'increase':
@@ -85,10 +103,7 @@ const KPICard: React.FC<KPICardProps> = ({
       
       <div className="space-y-2">
         <p className="text-3xl font-bold text-gray-900 group-hover:text-gray-800 transition-colors">
-          {typeof value === 'number' && value > 999 
-            ? value.toLocaleString() 
-            : value
-          }
+          {formatValue(value)}
         </p>
         
         {change && (

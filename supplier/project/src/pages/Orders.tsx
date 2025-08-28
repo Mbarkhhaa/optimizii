@@ -517,9 +517,9 @@ const Orders: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">${order.total?.toFixed(2)}</div>
+                      <div className="text-sm font-medium text-gray-900">{order.total?.toFixed(2)} TND</div>
                       <div className="text-xs text-gray-500">
-                        Subtotal: ${order.subtotal?.toFixed(2)}
+                        Sous-total: {order.subtotal?.toFixed(2)} TND
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -717,11 +717,12 @@ const Orders: React.FC = () => {
                             </div>
                             <div>
                               <span className="font-medium">Unit Price:</span> ${item.unitPrice?.toFixed(2)}
+                              <span className="font-medium">Prix unitaire:</span> {item.unitPrice?.toFixed(2)} TND
                             </div>
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <p className="text-lg font-bold text-gray-900">${item.totalPrice?.toFixed(2)}</p>
+                          <p className="text-lg font-bold text-gray-900">{item.totalPrice?.toFixed(2)} TND</p>
                         </div>
                       </div>
                     ))}
@@ -737,20 +738,20 @@ const Orders: React.FC = () => {
                   <div className="bg-white rounded-2xl p-6 space-y-4">
                     <div className="flex justify-between text-gray-600">
                       <span>Subtotal:</span>
-                      <span>${selectedOrder.subtotal?.toFixed(2)}</span>
+                      <span>{selectedOrder.subtotal?.toFixed(2)} TND</span>
                     </div>
                     <div className="flex justify-between text-gray-600">
                       <span>Delivery Fee:</span>
-                      <span>${selectedOrder.deliveryFee?.toFixed(2)}</span>
+                      <span>{selectedOrder.deliveryFee?.toFixed(2)} TND</span>
                     </div>
                     <div className="flex justify-between text-gray-600">
                       <span>Tax:</span>
-                      <span>${selectedOrder.tax?.toFixed(2)}</span>
+                      <span>{selectedOrder.tax?.toFixed(2)} TND</span>
                     </div>
                     <div className="border-t border-gray-200 pt-4">
                       <div className="flex justify-between text-xl font-bold text-gray-900">
                         <span>Total:</span>
-                        <span>${selectedOrder.total?.toFixed(2)}</span>
+                        <span>{selectedOrder.total?.toFixed(2)} TND</span>
                       </div>
                     </div>
                   </div>

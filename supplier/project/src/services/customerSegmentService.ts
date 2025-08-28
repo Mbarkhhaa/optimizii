@@ -36,8 +36,8 @@ export class CustomerSegmentService {
       });
 
       // Define segment thresholds
-      const HIGH_VALUE_THRESHOLD = 300; // lowered to surface segments
-      const MEDIUM_VALUE_THRESHOLD = 100;
+      const HIGH_VALUE_THRESHOLD = 150; // Further lowered to surface segments with real data
+      const MEDIUM_VALUE_THRESHOLD = 50;
       const NEW_CUSTOMER_MAX_ORDERS = 1;
 
       const segments = {
@@ -64,6 +64,13 @@ export class CustomerSegmentService {
           segments['New Customers'].count += 1;
           segments['New Customers'].revenue += data.revenue;
         }
+      });
+
+      console.log('Customer segmentation debug:', {
+        totalCustomers: customerData.size,
+        totalRevenue,
+        segments,
+        thresholds: { HIGH_VALUE_THRESHOLD, MEDIUM_VALUE_THRESHOLD, NEW_CUSTOMER_MAX_ORDERS }
       });
 
       // Convert to array format with percentages

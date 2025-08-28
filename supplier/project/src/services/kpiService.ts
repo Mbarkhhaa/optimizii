@@ -181,6 +181,14 @@ export class KPIService {
     const recentCustomers = new Set(recentOrders.map(order => order.userId)).size;
     const previousCustomers = new Set(previousOrders.map(order => order.userId)).size;
 
+    console.log('Growth metrics calculation:', {
+      recentOrders: recentOrders.length,
+      previousOrders: previousOrders.length,
+      recentRevenue,
+      previousRevenue,
+      recentCustomers,
+      previousCustomers
+    });
     return {
       revenueGrowth: previousRevenue > 0 ? ((recentRevenue - previousRevenue) / previousRevenue) * 100 : 0,
       orderGrowth: previousOrders.length > 0 ? ((recentOrders.length - previousOrders.length) / previousOrders.length) * 100 : 0,
